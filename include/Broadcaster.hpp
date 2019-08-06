@@ -28,7 +28,7 @@ public:
 private:
 	mediasoupclient::Device device;
 
-	std::string id = std::to_string(rtc::CreateRandomId());
+	std::string id;
 	std::string transportId;
 	std::string baseUrl;
 };

@@ -19,8 +19,8 @@ static rtc::scoped_refptr<webrtc::VideoCaptureModule> videoCaptureModule;
 class CapturerTrackSource;
 static rtc::scoped_refptr<CapturerTrackSource> videoDevice{ nullptr };
 
-static rtc::Thread* signalingThread{ nullptr };
-static rtc::Thread* workerThread{ nullptr };
+std::unique_ptr<rtc::Thread>  signalingThread{ nullptr };
+std::unique_ptr<rtc::Thread>  workerThread{ nullptr };
 
 class CapturerTrackSource : public webrtc::VideoTrackSource
 {
@@ -61,21 +61,25 @@ static void createPeerConnectionFactory()
 
 	webrtc::PeerConnectionInterface::RTCConfiguration config;
 
-	signalingThread = new rtc::Thread();
-	workerThread    = new rtc::Thread();
+	signalingThread = rtc::Thread::Create();
+	workerThread    = rtc::Thread::Create();
 
 	signalingThread->SetName("signaling_thread", nullptr);
 	workerThread->SetName("worker_thread", nullptr);
+	std::cout << "createPeerConnectionFactory" << " " << __LINE__ <<  std::endl;
 
 	if (!signalingThread->Start() || !workerThread->Start())
 	{
+		std::cout << "createPeerConnectionFactory" << " " << __LINE__ <<  std::endl;
+
 		throw std::runtime_error("Thread start errored");
 	}
+	std::cout << "createPeerConnectionFactory" << " " << __LINE__ <<  std::endl;
 
 	peerConnectionFactory = webrtc::CreatePeerConnectionFactory(
-	  workerThread,
-	  workerThread,
-	  signalingThread,
+	  workerThread.get(),
+	  workerThread.get(),
+	  signalingThread.get(),
 	  nullptr /*default_adm*/,
 	  webrtc::CreateBuiltinAudioEncoderFactory(),
 	  webrtc::CreateBuiltinAudioDecoderFactory(),
@@ -83,6 +87,7 @@ static void createPeerConnectionFactory()
 	  webrtc::CreateBuiltinVideoDecoderFactory(),
 	  nullptr /*audio_mixer*/,
 	  nullptr /*audio_processing*/);
+
 }
 
 // Audio source creation.

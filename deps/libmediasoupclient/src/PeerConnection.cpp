@@ -79,8 +79,8 @@ PeerConnection::PeerConnection(
 	}
 	else
 	{
-		this->signalingThread.reset(new rtc::Thread());
-		this->workerThread.reset(new rtc::Thread());
+		this->signalingThread = rtc::Thread::Create();
+		this->workerThread = rtc::Thread::Create();
 
 		this->signalingThread->SetName("signaling_thread", nullptr);
 		this->workerThread->SetName("worker_thread", nullptr);

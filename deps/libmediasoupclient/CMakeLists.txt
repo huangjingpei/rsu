@@ -7,6 +7,8 @@ set(mediasoupclient_VERSION_MAJOR 3)
 set(mediasoupclient_VERSION_MINOR 0)
 set(mediasoupclient_VERSION_PATCH 0)
 
+
+
 # Configure a header file to pass the version.
 configure_file (
   "${PROJECT_SOURCE_DIR}/version.hpp.in"
@@ -14,14 +16,17 @@ configure_file (
 )
 
 # C++ standard requirements.
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+#set(CMAKE_CXX_STANDARD 11)
+#set(CMAKE_CXX_STANDARD_REQUIRED ON)
+ADD_DEFINITIONS("-std=c++11")
 
 # Project options.
 option(MEDIASOUPCLIENT_BUILD_TESTS "Build unit tests" ON)
 option(MEDIASOUPCLIENT_LOG_TRACE   "Enable MSC_LOG_TRACE (See Logger.hpp)" OFF)
 option(MEDIASOUPCLIENT_LOG_DEV     "Enable MSC_LOG_DEV (See Logger.hpp)" OFF)
 
+SET(LIBWEBRTC_INCLUDE_PATH "/opt/mywork/home/ubuntu/mywork/webrtc_android/webrtc-checkout/src")
+SET(LIBWEBRTC_BINARY_PATH "/opt/mywork/home/ubuntu/mywork/webrtc_android/webrtc-checkout/src/out/m74/obj")
 # Project configuration.
 set(LIBWEBRTC_INCLUDE_PATH "" CACHE STRING "libwebrtc include path")
 set(LIBWEBRTC_BINARY_PATH "" CACHE STRING "libwebrtc binary path")
@@ -42,9 +47,9 @@ message (STATUS "LIBWEBRTC_INCLUDE_PATH       = " ${LIBWEBRTC_INCLUDE_PATH})
 message (STATUS "LIBWEBRTC_BINARY_PATH        = " ${LIBWEBRTC_BINARY_PATH})
 message ("")
 
-if (${BUILD_TESTS})
-	add_subdirectory(test)
-endif()
+#if (${BUILD_TESTS})
+	#add_subdirectory(test)
+#endif()
 
 set(HEADER_FILES
 	include/mediasoupclient.hpp
@@ -107,7 +112,9 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 # Public (interface) dependencies.
 target_link_libraries(${PROJECT_NAME} PUBLIC
 	sdptransform
+	${LIBWEBRTC_BINARY_PATH}/api/libcreate_peerconnection_factory${CMAKE_STATIC_LIBRARY_SUFFIX}
 	${LIBWEBRTC_BINARY_PATH}/libwebrtc${CMAKE_STATIC_LIBRARY_SUFFIX}
+	dl
 )
 
 # Compile definitions for libwebrtc.

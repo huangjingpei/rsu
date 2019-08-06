@@ -52,8 +52,8 @@ static void createPeerConnectionFactory()
 {
 	webrtc::PeerConnectionInterface::RTCConfiguration config;
 
-	signalingThread = new rtc::Thread();
-	workerThread    = new rtc::Thread();
+	signalingThread = rtc::Thread::Create();
+	workerThread    = rtc::Thread::Create();
 
 	signalingThread->SetName("signaling_thread", nullptr);
 	workerThread->SetName("worker_thread", nullptr);

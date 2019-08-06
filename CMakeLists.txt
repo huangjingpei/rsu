@@ -2,13 +2,16 @@ cmake_minimum_required(VERSION 3.8)
 
 project(broadcaster LANGUAGES CXX)
 
+set(CMAKE_VERBOSE_MAKEFILE ON)
+ADD_DEFINITIONS(-DDEBUG -D_WEBSOCKETPP_CPP11_STL_ -DNDEBUG -DWEBRTC_POSIX)
 # Set version number.
 set(broadcaster_VERSION_MAJOR 0)
 set(broadcaster_VERSION_MINOR 1)
 
 # C++ standard requirements.
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+#set(CMAKE_CXX_STANDARD 11)
+#set(CMAKE_CXX_STANDARD_REQUIRED ON)
+ADD_DEFINITIONS("-std=c++11")
 
 # Add some compile flags to our source files.
 set_source_files_properties(${SOURCE_FILES}
@@ -37,6 +40,7 @@ if(APPLE)
 		${CORE_MEDIA}
 		${CORE_VIDEO}
 		${CORE_SERVICES}
+		stdc++
 	)
 endif(APPLE)
 
@@ -46,6 +50,7 @@ target_sources(${PROJECT_NAME} PRIVATE
 	src/peerConnectionUtils.cpp
 	src/VideoCapturer.cpp
 	src/VcmCapturer.cpp
+	src/WssClient.cpp
 )
 
 # Private (implementation) header files.
@@ -57,12 +62,19 @@ add_subdirectory(deps/cpr "${CMAKE_CURRENT_BINARY_DIR}/cpr")
 
 # Public (interface) headers from dependencies.
 target_include_directories(${PROJECT_NAME} PUBLIC
-	"${PROJECT_SOURCE_DIR}/deps/libmediasoupclient/include"
+	"${PROJECT_SOURCE_DIR}/deps/libmediasoupclient/include"	
+	"${PROJECT_SOURCE_DIR}/deps/websocketpp"
 	${CPR_INCLUDE_DIRS}
+
 )
 
 # Public (interface) dependencies.
 target_link_libraries(${PROJECT_NAME} PUBLIC
 	mediasoupclient
-	${CPR_LIBRARIES}
+	#${CPR_LIBRARIES}
+	boost_system
+	ssl
+	crypto
+	pthread
+	
 )
