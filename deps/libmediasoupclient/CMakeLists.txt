@@ -25,8 +25,10 @@ option(MEDIASOUPCLIENT_BUILD_TESTS "Build unit tests" ON)
 option(MEDIASOUPCLIENT_LOG_TRACE   "Enable MSC_LOG_TRACE (See Logger.hpp)" OFF)
 option(MEDIASOUPCLIENT_LOG_DEV     "Enable MSC_LOG_DEV (See Logger.hpp)" OFF)
 
-SET(LIBWEBRTC_INCLUDE_PATH "/opt/mywork/home/ubuntu/mywork/webrtc_android/webrtc-checkout/src")
-SET(LIBWEBRTC_BINARY_PATH "/opt/mywork/home/ubuntu/mywork/webrtc_android/webrtc-checkout/src/out/m74/obj")
+
+SET(LIBWEBRTC_INCLUDE_PATH "${PROJECT_SOURCE_DIR}/../webrtc")
+SET(LIBWEBRTC_BINARY_PATH "${PROJECT_SOURCE_DIR}/../webrtc/out/m74/obj")
+
 # Project configuration.
 set(LIBWEBRTC_INCLUDE_PATH "" CACHE STRING "libwebrtc include path")
 set(LIBWEBRTC_BINARY_PATH "" CACHE STRING "libwebrtc binary path")
@@ -112,7 +114,6 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 # Public (interface) dependencies.
 target_link_libraries(${PROJECT_NAME} PUBLIC
 	sdptransform
-	${LIBWEBRTC_BINARY_PATH}/api/libcreate_peerconnection_factory${CMAKE_STATIC_LIBRARY_SUFFIX}
 	${LIBWEBRTC_BINARY_PATH}/libwebrtc${CMAKE_STATIC_LIBRARY_SUFFIX}
 	dl
 )

@@ -79,7 +79,7 @@ elif env['PLATFORM'] == 'posix':
    if env.has_key('DEBUG'):
       env.Append(CCFLAGS = ['-g', '-O0'])
    else:
-      env.Append(CPPDEFINES = ['NDEBUG'])
+      env.Append(CPPDEFINES = ['NDEBUG', '_WEBSOCKETPP_CPP11_STL_'])
       env.Append(CCFLAGS = ['-O1', '-fomit-frame-pointer'])
    env.Append(CCFLAGS = ['-Wall'])
    #env['LINKFLAGS'] = ''
@@ -137,7 +137,7 @@ tls_libs = []
 tls_build = False
 
 if env['PLATFORM'] == 'posix':
-   platform_libs = ['pthread', 'rt']
+   platform_libs = ['pthread', 'rt', 'ssl', 'crypto']
    tls_libs = ['ssl', 'crypto']
    tls_build = True
 elif env['PLATFORM'] == 'darwin':
@@ -161,13 +161,13 @@ if env_cpp11['CXX'].startswith('g++'):
 
    if GCC_VERSION > "4.4.0":
       print "C++11 build environment partially enabled"
-      env_cpp11.Append(WSPP_CPP11_ENABLED = "true",CXXFLAGS = ['-std=c++11'],TOOLSET = ['g++'],CPPDEFINES = ['_WEBSOCKETPP_CPP11_STL_'])
+      env_cpp11.Append(WSPP_CPP11_ENABLED = "true",CXXFLAGS = ['-std=c++0x'],TOOLSET = ['g++'],CPPDEFINES = ['_WEBSOCKETPP_CPP11_STL_'])
    else:
       print "C++11 build environment is not supported on this version of G++"
 elif env_cpp11['CXX'].startswith('clang++'):
    print "C++11 build environment enabled"
    env.Append(CXXFLANGS = ['-stdlib=libc++'],LINKFLAGS=['-stdlib=libc++'])
-   env_cpp11.Append(WSPP_CPP11_ENABLED = "true",CXXFLAGS = ['-std=c++11','-stdlib=libc++'],LINKFLAGS = ['-stdlib=libc++'],TOOLSET = ['clang++'],CPPDEFINES = ['_WEBSOCKETPP_CPP11_STL_'])
+   env_cpp11.Append(WSPP_CPP11_ENABLED = "true",CXXFLAGS = ['-std=c++0x','-stdlib=libc++'],LINKFLAGS = ['-stdlib=libc++'],TOOLSET = ['clang++'],CPPDEFINES = ['_WEBSOCKETPP_CPP11_STL_'])
 
    # look for optional second boostroot compiled with clang's libc++ STL library
    # this prevents warnings/errors when linking code built with two different
@@ -210,7 +210,12 @@ Export('platform_libs')
 Export('boostlibs')
 Export('tls_libs')
 Export('polyfill_libs')
-
+totalSources = '''
+    WssClient.cpp\
+'''
+env['LIBS'] = ['c', 'rt', 'dl', 'pthread', 'ssl', 'crypto']
+env.SharedLibrary('./lib/libwssclient.so', totalSources.split(), _LIBFLAGS=' -Wl,-Bsymbolic -lssl -lcrypto')
+'''
 ## END OF CONFIG !!
 
 ## TARGETS:
@@ -283,3 +288,4 @@ if not env['PLATFORM'].startswith('win'):
 
     # print_server
     print_server = SConscript('#/examples/print_server/SConscript',variant_dir = builddir + 'print_server',duplicate = 0)
+'''

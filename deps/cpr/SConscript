@@ -1,0 +1,32 @@
+﻿Import('*')
+
+_env = env.Clone()
+
+_env.Append(CPPFLAGS = ''' -std=c++11''')
+_env.Append(CPPPATH = ['#libutils'])
+_env.Append(LIBPATH = '')
+_env['LIBS'] = ['c', 'rt', 'dl', 'pthread']
+_env.Append(CPPPATH = [
+            '/home/ubuntu/mywork/mywebrtc/src/third_party/jsoncpp/source/include/',
+            '#./prepend/libwebsockets/include/',
+            '#./prepend/libssl/include',
+            ])
+totalSources = '''
+	janus_protocol.cc\
+	janus_websocket.cc\
+'''
+
+#all = _env.SharedLibrary('libutils.so', totalSources.split(), _LIBFLAGS=' -Wl,-Bsymbolic')
+
+
+_myName='libjanus'
+objs = totalSources.split()
+target = _env.SharedLibrary(_myName + '.so-dev', objs, _LIBFLAGS=' -Wl,-Bsymbolic')
+objs.append(target)
+
+
+
+target = _env.Command(_myName + '.so', _myName + '.so-dev', "cp $SOURCE  $TARGET")
+objs.append(target)
+
+Return('target')

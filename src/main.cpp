@@ -85,5 +85,9 @@
 //	return 0;
 //}
 //#else
-//
+#include "RoomClient.hpp"
+	int main() {
+		RoomClient * client = new RoomClient();
+		client->RunAndWaitForever("wss://127.0.0.1:4443/?roomId=9nhl6r9k&peerId=iam9527");
+	}
 //#endif

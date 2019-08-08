@@ -1,0 +1,44 @@
+﻿Import('*')
+
+_env = env.Clone()
+
+_env.Append(CPPFLAGS = ''' -std=c++11''')
+_env.Append(CPPPATH = ['#libutils'])
+_env.Append(LIBPATH = '')
+_env['LIBS'] = ['c', 'rt', 'dl', 'pthread']
+_env.Append(CPPPATH = [
+		'#deps/libmediasoupclient/include',
+		'#deps/libmediasoupclient/deps/libsdptransform/include/',
+		_env['RTCPATH'],
+		_env['RTCPATH']+'/third_party/abseil-cpp'
+            ])
+totalSources = '''
+	src/Consumer.cpp
+	src/Device.cpp
+	src/Handler.cpp
+	src/Logger.cpp
+	src/mediasoupclient.cpp
+	src/ortc.cpp
+	src/PeerConnection.cpp
+	src/Producer.cpp
+	src/scalabilityMode.cpp
+	src/Transport.cpp
+	src/sdp/MediaSection.cpp
+	src/sdp/RemoteSdp.cpp
+	src/sdp/Utils.cpp
+'''
+
+#all = _env.SharedLibrary('libutils.so', totalSources.split(), _LIBFLAGS=' -Wl,-Bsymbolic')
+
+
+_myName='libmediasoupclient'
+objs = totalSources.split()
+target = _env.SharedLibrary(_myName + '.so-dev', objs, _LIBFLAGS=' -Wl,-Bsymbolic')
+objs.append(target)
+
+
+
+target = _env.Command(_myName + '.so', _myName + '.so-dev', "cp $SOURCE  $TARGET")
+objs.append(target)
+
+Return('target')

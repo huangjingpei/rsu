@@ -1,9 +1,10 @@
 cmake_minimum_required(VERSION 3.8)
 
-project(broadcaster LANGUAGES CXX)
+project(rsu LANGUAGES CXX)
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
-ADD_DEFINITIONS(-DDEBUG -D_WEBSOCKETPP_CPP11_STL_ -DNDEBUG -DWEBRTC_POSIX)
+#ADD_DEFINITIONS(-g -isystem /opt/mywork/home/ubuntu/mywork/thirdparty/boost_1_69_0 -DDEBUG -D_WEBSOCKETPP_CPP11_STL_ -DNDEBUG -DUSE_UDEV -DUSE_AURA=1 -DUSE_NSS_CERTS=1 -DUSE_OZONE=1 -DFULL_SAFE_BROWSING -DSAFE_BROWSING_CSD -DSAFE_BROWSING_DB_LOCAL -DCHROMIUM_BUILD -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D_FORTIFY_SOURCE=2 -DCR_SYSROOT_HASH=e7c53f04bd88d29d075bfd1f62b073aeb69cbe09 -DNDEBUG -DNVALGRIND -DDYNAMIC_ANNOTATIONS_ENABLED=0 -DWEBRTC_ENABLE_PROTOBUF=0 -DWEBRTC_INCLUDE_INTERNAL_AUDIO_DEVICE -DRTC_ENABLE_VP9 -DHAVE_SCTP -DWEBRTC_USE_H264 -DWEBRTC_LIBRARY_IMPL -DWEBRTC_NON_STATIC_TRACE_EVENT_HANDLERS=0 -DWEBRTC_POSIX -DWEBRTC_LINUX -DABSL_ALLOCATOR_NOTHROW=1 -DHAVE_SCTP)
+ADD_DEFINITIONS(-g)
 # Set version number.
 set(broadcaster_VERSION_MAJOR 0)
 set(broadcaster_VERSION_MINOR 1)
@@ -16,6 +17,8 @@ ADD_DEFINITIONS("-std=c++11")
 # Add some compile flags to our source files.
 set_source_files_properties(${SOURCE_FILES}
 	PROPERTIES COMPILE_FLAGS -Wall -Wextra -Wpedantic)
+link_directories(${PROJECT_SOURCE_DIR}/deps/websocketpp/lib)
+link_directories(${PROJECT_SOURCE_DIR}/deps/webrtc/out/m74/obj)
 
 # Create target.
 add_executable(${PROJECT_NAME} ${SOURCES})
@@ -50,7 +53,7 @@ target_sources(${PROJECT_NAME} PRIVATE
 	src/peerConnectionUtils.cpp
 	src/VideoCapturer.cpp
 	src/VcmCapturer.cpp
-	src/WssClient.cpp
+	src/RoomClient.cpp
 )
 
 # Private (implementation) header files.
@@ -71,10 +74,12 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 # Public (interface) dependencies.
 target_link_libraries(${PROJECT_NAME} PUBLIC
 	mediasoupclient
-	#${CPR_LIBRARIES}
-	boost_system
-	ssl
-	crypto
+	${CPR_LIBRARIES}
+	wssclient
 	pthread
+	rt
 	
 )
+
+
+

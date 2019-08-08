@@ -1,0 +1,8 @@
+
+#cmake -DLIBWEBRTC_INCLUDE_PATH="/opt/mywork/home/ubuntu/mywork/webrtc_android/webrtc-checkout/src" -DLIBWEBRTC_BINARY_PATH="/opt/mywork/home/ubuntu/mywork/webrtc_android/webrtc-checkout/src/out/m74/obj" -DCMAKE_USE_OPENSSL=ON -DCMAKE_CXX_FLAGS="-fvisibility=hidden" ../
+
+
+1. 创建build目录 
+mkdir build
+2. 进入build目录执行如下命令
+cmake -DLIBWEBRTC_INCLUDE_PATH="../../webrtc" -DLIBWEBRTC_BINARY_PATH="../../webrtc/m74/obj" -DCMAKE_USE_OPENSSL=ON -DCMAKE_CXX_FLAGS="-fvisibility=hidden" ../
